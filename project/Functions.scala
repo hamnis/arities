@@ -29,6 +29,10 @@ object Functions {
            |     return ($names) -> value;
            |   }
            |
+           |   static <$types, B> Function$n<$types, B> untupled(Function<Tuple$n<$types>, B> f) {
+           |     return ($names) -> f.apply(Tuples.of($names));
+           |   }
+           |
            |   default Function<Tuple$n<$types>, B> tupled() {
            |      return t -> apply($tupledValues);
            |   }
