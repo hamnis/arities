@@ -1,8 +1,8 @@
 import sbt._
 
 object Tuples {
-  def generate(basedir: File, pkg: String): IndexedSeq[File] = {
-    val f = basedir / pkg.replace('.', '/')
+  def generate(baseDir: File, sourceDir: File, pkg: String): IndexedSeq[File] = {
+    val f = sourceDir / pkg.replace('.', '/')
 
     for(n <- 2 to 27) yield {
       val file = f / s"Tuple$n.java"
@@ -74,6 +74,8 @@ object Tuples {
            |  public String toString() {
            |    return asList().stream().map(Object::toString).collect(java.util.stream.Collectors.joining(", ", "(", ")"));
            |  }
+           |
+           |  private static final long serialVersionUID = ${SerialVersionUID.shaAsLong(baseDir / "project" / "Tuples.scala")}L;
            |}
       """.stripMargin
       IO.write(file, content)
