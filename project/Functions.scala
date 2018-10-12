@@ -3,6 +3,7 @@ import sbt._
 object Functions {
   def generate(basedir: File, sourceDir: File, pkg: String): IndexedSeq[File] = {
     val f = sourceDir / pkg.replace('.', '/')
+    val serialVersionUID = SerialVersionUID.shaAsLong(basedir / "project" / "Functions.scala")
 
     for(n <- 3 to 27) yield {
       val file = f / s"Function$n.java"
@@ -46,7 +47,7 @@ object Functions {
            |     return ($names) -> after.apply(apply($names));
            |   }
            |
-           |   long serialVersionUID = ${SerialVersionUID.shaAsLong(basedir / "project" / "Functions.scala")}L;
+           |   long serialVersionUID = ${serialVersionUID}L;
            |}
            |
       """.stripMargin

@@ -3,6 +3,7 @@ import sbt._
 object Tuples {
   def generate(baseDir: File, sourceDir: File, pkg: String): IndexedSeq[File] = {
     val f = sourceDir / pkg.replace('.', '/')
+    val serialVersionUID = {SerialVersionUID.shaAsLong(baseDir / "project" / "Tuples.scala")}
 
     for(n <- 2 to 27) yield {
       val file = f / s"Tuple$n.java"
@@ -19,7 +20,6 @@ object Tuples {
            |  public java.util.Map.Entry<A1, A2> asEntry() {
            |    return new java.util.AbstractMap.SimpleImmutableEntry<>(_1, _2);
            |  }""".stripMargin
-
 
       val content =
         s"""package $pkg;
@@ -66,6 +66,10 @@ object Tuples {
            |    } else return false;
            |  }
            |
+           |  public int arity() {
+           |    return $n;
+           |  }
+           |
            |  public List<Object> asList() {
            |    return Arrays.asList(${names.mkString(", ")});
            |  }
@@ -75,7 +79,7 @@ object Tuples {
            |    return asList().stream().map(Object::toString).collect(java.util.stream.Collectors.joining(", ", "(", ")"));
            |  }
            |
-           |  private static final long serialVersionUID = ${SerialVersionUID.shaAsLong(baseDir / "project" / "Tuples.scala")}L;
+           |  private static final long serialVersionUID = ${serialVersionUID}L;
            |}
       """.stripMargin
       IO.write(file, content)
