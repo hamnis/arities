@@ -4,6 +4,10 @@ enablePlugins(aether.SignedAetherPlugin)
 overridePublishSignedSettings
 overridePublishLocalSettings
 
+publishMavenStyle := true
+publishArtifact in Test := false
+pomIncludeRepository := { _ => false }
+
 publishTo := {
   if (isSnapshot.value) {
     Some(Opts.resolver.sonatypeSnapshots)
@@ -11,10 +15,7 @@ publishTo := {
     Some(Opts.resolver.sonatypeStaging)
   }
 }
-
-pomIncludeRepository := { x =>
-  false
-}
+credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
 
 packageOptions += {
   val title  = name.value
@@ -34,31 +35,13 @@ packageOptions += {
     "Implementation-Vendor"    -> vendor
   )
 }
-
-credentials ++= Seq(
-  Credentials(Path.userHome / ".sbt" / ".credentials"),
-)
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
 homepage := Some(url("https://github.com/hamnis/arities"))
-
-startYear := Some(2017)
-
+startYear := Some(2018)
 licenses := Seq(
   "Apache2" -> url("https://github.com/hamnis/arities/blob/master/LICENSE.txt")
 )
-
-publishMavenStyle := true
-
-publishArtifact in Test := false
-
-pomIncludeRepository := { _ =>
-  false
-}
-
-releaseCrossBuild := true
-
-releasePublishArtifactsAction := PgpKeys.publishSigned.value
-
 scmInfo := Some(
   ScmInfo(
     new URL("https://github.com/hamnis/arities"),
