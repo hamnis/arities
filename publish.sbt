@@ -32,7 +32,8 @@ packageOptions += {
     "Implementation-Title"     -> title,
     "Implementation-Version"   -> ver,
     "Implementation-Vendor-Id" -> vendor,
-    "Implementation-Vendor"    -> vendor
+    "Implementation-Vendor"    -> vendor,
+    "Automatic-Module-Name"    -> "net.hamnaberg.arities"
   )
 }
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
