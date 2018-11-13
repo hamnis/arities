@@ -3,33 +3,39 @@ package net.hamnaberg.arities;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.function.Function;
 
 public class SQLFunctionTest {
 
     @Test
     public void catchException() {
-        SQLFunction<Void, Void> function = (a) -> {
-            throw new SQLException("Nope");
+        IOFunction<Void, Void> function = (a) -> {
+            throw new IOException("Nope");
         };
 
         try {
             function.apply(null);
             Assert.fail();
-        } catch (SQLException e) {
+        } catch (IOException e) {
             Assert.assertEquals("Nope", e.getMessage());
         }
     }
 
     @Test
     public void uncheckedExceptionShouldNotBeWrapped() {
-        SQLFunction<Void, Void> function = (a) -> {
-            throw new SQLException("Nope");
+        IOFunction<Void, Void> function = (a) -> {
+            throw new IOException("Nope");
         };
 
 
+        uncheckedException(function.unchecked());
+    }
+
+    static void uncheckedException(Function<Void, Void> unchecked) {
         try {
-            function.unchecked().apply(null);
+            unchecked.apply(null);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertEquals("Nope", e.getMessage());
