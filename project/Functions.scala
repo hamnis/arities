@@ -91,6 +91,18 @@ object Functions {
            |      return t -> apply(${(1 to n).map(i => s"t._$i").mkString(", ")});
            |   }
            |
+           |   static <$types, B> ${prefix}Function$n<$types, B> fromFunction(Function$n<$types, B> f) {
+           |        return ($names) -> {
+           |            try {
+           |                return f.apply($names);
+           |            } catch (Exception e) {
+           |                //noinspection ConstantConditions
+           |                if (e instanceof $exceptionBaseType) throw (($exceptionBaseType) e);
+           |                else throw new $exceptionBaseType(e);
+           |            }
+           |        };
+           |    }
+           |
            |   default Function$n<$types, B> unchecked() {
            |      return ($names) -> {
            |        try {

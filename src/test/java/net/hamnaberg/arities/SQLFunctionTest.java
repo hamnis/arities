@@ -3,6 +3,7 @@ package net.hamnaberg.arities;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.function.Function;
@@ -101,6 +102,21 @@ public class SQLFunctionTest {
         } catch (SQLException e) {
             Assert.fail();
         }
+    }
+
+    @Test
+    public void sneaky() {
+        SQLFunction<Void, Void> function = (a) -> {
+            throw new SQLException("Nope");
+        };
+        SQLFunction<Void, Void> throwingAgain = SQLFunction.fromFunction(function.unchecked());
+        try {
+            throwingAgain.apply(null);
+            Assert.fail();
+        } catch (SQLException e) {
+            assertEquals("Nope", e.getMessage());
+        }
+
     }
 
 }

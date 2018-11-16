@@ -71,6 +71,28 @@ object Consumers {
            |public interface ${prefix}Consumer$n<$types> extends Serializable {
            |   void accept($paramsString) throws $exceptionBaseType;
            |
+           |   static <$types> ${prefix}Consumer$n<$types> fromConsumer(Consumer$n<$types> f) {
+           |        return ($names) -> {
+           |            try {
+           |                f.accept($names);
+           |            } catch (Exception e) {
+           |                //noinspection ConstantConditions
+           |                if (e instanceof $exceptionBaseType) throw (($exceptionBaseType)e);
+           |                else throw new $exceptionBaseType(e);
+           |            }
+           |        };
+           |    }
+           |
+           |   default Consumer$n<$types> unchecked() {
+           |      return ($names) -> {
+           |        try {
+           |          accept($names);
+           |        } catch ($exceptionBaseType e) {
+           |          throw Sneaky.sneakyThrow(e);
+           |        }
+           |      };
+           |   }
+           |
            |   static <$types> ${prefix}Consumer$n<$types> untupled(Consumer<Tuple$n<$types>> f) {
            |     return ($names) -> f.accept(Tuples.of($names));
            |   }
@@ -86,15 +108,6 @@ object Consumers {
            |      };
            |   }
            |
-           |   default Consumer$n<$types> unchecked() {
-           |      return ($names) -> {
-           |        try {
-           |          accept($names);
-           |        } catch ($exceptionBaseType e) {
-           |          throw Sneaky.sneakyThrow(e);
-           |        }
-           |      };
-           |   }
            |
            |   long serialVersionUID = ${serialVersionUID}L;
            |}

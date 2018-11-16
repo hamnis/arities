@@ -17,6 +17,18 @@ public interface SQLFunction<A, B> extends Serializable {
         return a -> a;
     }
 
+    static <A, B> SQLFunction<A, B> fromFunction(Function<A, B> f) {
+        return a -> {
+            try {
+                return f.apply(a);
+            } catch (Exception e) {
+                //noinspection ConstantConditions
+                if (e instanceof SQLException) throw ((SQLException)e);
+                else throw new SQLException(e);
+            }
+        };
+    }
+
     default Function<A, B> unchecked() {
         return (a) -> {
             try {

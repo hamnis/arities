@@ -14,6 +14,19 @@ public interface IOBiFunction<A1, A2, B> extends Serializable {
         return (ignore1, ignore2) -> value;
     }
 
+
+    static <A1, A2, B> IOBiFunction<A1, A2, B> fromFunction(BiFunction<A1, A2, B> f) {
+        return (a1, a2) -> {
+            try {
+                return f.apply(a1, a2);
+            } catch (Exception e) {
+                //noinspection ConstantConditions
+                if (e instanceof IOException) throw ((IOException) e);
+                else throw new IOException(e);
+            }
+        };
+    }
+
     default BiFunction<A1, A2, B> unchecked() {
         return (a1, a2) -> {
             try {
@@ -33,7 +46,7 @@ public interface IOBiFunction<A1, A2, B> extends Serializable {
     }
 
     default IOFunction<A1, IOFunction<A2, B>> curried() {
-        return a1 -> a2 -> apply(a1 , a2);
+        return a1 -> a2 -> apply(a1, a2);
     }
 
     default <V> IOBiFunction<A1, A2, V> andThen(IOFunction<? super B, ? extends V> after) {

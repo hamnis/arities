@@ -91,4 +91,19 @@ public class IOFunctionTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void sneaky() {
+        IOFunction<Void, Void> function = (a) -> {
+            throw new IOException("Nope");
+        };
+        IOFunction<Void, Void> throwingAgain = IOFunction.fromFunction(function.unchecked());
+        try {
+            throwingAgain.apply(null);
+            Assert.fail();
+        } catch (IOException e) {
+            assertEquals("Nope", e.getMessage());
+        }
+
+    }
 }

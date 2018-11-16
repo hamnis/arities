@@ -14,6 +14,18 @@ public interface SQLBiFunction<A1, A2, B> extends Serializable {
         return (ignore1, ignore2) -> value;
     }
 
+    static <A1, A2, B> SQLBiFunction<A1, A2, B> fromFunction(BiFunction<A1, A2, B> f) {
+        return (a1, a2) -> {
+            try {
+                return f.apply(a1, a2);
+            } catch (Exception e) {
+                //noinspection ConstantConditions
+                if (e instanceof SQLException) throw ((SQLException)e);
+                else throw new SQLException(e);
+            }
+        };
+    }
+
     default BiFunction<A1, A2, B> unchecked() {
         return (a1, a2) -> {
             try {

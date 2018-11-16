@@ -17,6 +17,18 @@ public interface IOFunction<A, B> extends Serializable {
         return a -> a;
     }
 
+    static <A, B> IOFunction<A, B> fromFunction(Function<A, B> f) {
+        return a -> {
+            try {
+                return f.apply(a);
+            } catch (Exception e) {
+                //noinspection ConstantConditions
+                if (e instanceof IOException) throw ((IOException)e);
+                else throw new IOException(e);
+            }
+        };
+    }
+
     default Function<A, B> unchecked() {
         return (a) -> {
             try {

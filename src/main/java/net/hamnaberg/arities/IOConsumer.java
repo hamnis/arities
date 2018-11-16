@@ -7,6 +7,18 @@ import java.util.function.Consumer;
 public interface IOConsumer<A> {
     void accept(A input) throws IOException;
 
+    static <A> IOConsumer<A> fromConsumer(Consumer<A> f) {
+        return a -> {
+            try {
+                f.accept(a);
+            } catch (Exception e) {
+                //noinspection ConstantConditions
+                if (e instanceof IOException) throw ((IOException)e);
+                else throw new IOException(e);
+            }
+        };
+    }
+
     default Consumer<A> unchecked() {
         return (a) -> {
             try {

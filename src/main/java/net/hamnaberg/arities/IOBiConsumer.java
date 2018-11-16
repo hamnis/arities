@@ -8,6 +8,18 @@ import java.util.function.BiConsumer;
 public interface IOBiConsumer<A1, A2> extends Serializable {
     void accept(A1 a1, A2 a2) throws IOException;
 
+    static <A1, A2> IOBiConsumer<A1, A2> fromConsumer(BiConsumer<A1, A2> f) {
+        return (a1, a2) -> {
+            try {
+                f.accept(a1, a2);
+            } catch (Exception e) {
+                //noinspection ConstantConditions
+                if (e instanceof IOException) throw ((IOException)e);
+                else throw new IOException(e);
+            }
+        };
+    }
+
     default BiConsumer<A1, A2> unchecked() {
         return (a1, a2) -> {
             try {
