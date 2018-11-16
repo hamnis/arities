@@ -13,6 +13,10 @@ public interface IOFunction<A, B> extends Serializable {
         return (ignore) -> value;
     }
 
+    static <A> IOFunction<A, A> identity() {
+        return a -> a;
+    }
+
     default Function<A, B> unchecked() {
         return (a) -> {
             try {

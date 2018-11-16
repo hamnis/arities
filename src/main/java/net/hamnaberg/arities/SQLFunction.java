@@ -13,6 +13,10 @@ public interface SQLFunction<A, B> extends Serializable {
         return (ignore) -> value;
     }
 
+    static <A> SQLFunction<A, A> identity() {
+        return a -> a;
+    }
+
     default Function<A, B> unchecked() {
         return (a) -> {
             try {
