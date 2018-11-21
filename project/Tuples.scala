@@ -5,6 +5,17 @@ object Tuples {
     val f = sourceDir / pkg.replace('.', '/')
     val serialVersionUID = {SerialVersionUID.shaAsLong(baseDir / "project" / "Tuples.scala")}
 
+    def append(n: Int, types: String, names: Seq[String]) = {
+      val next = n+1
+      s"""  public <A$next> Tuple$next<$types, A$next> append(A$next _$next) {
+         |    return Tuples.of(${names.mkString(", ")}, _$next);
+         |  }
+         |
+         |  public <A0> Tuple$next<A0, $types> prepend(A0 first) {
+         |    return Tuples.of(first, ${names.mkString(", ")});
+         |  }""".stripMargin
+    }
+
     for(n <- 2 to 27) yield {
       val file = f / s"Tuple$n.java"
       val params = List.tabulate(n)(i => s"A${i + 1}" -> s"_${i + 1}")
@@ -37,6 +48,7 @@ object Tuples {
            |    ${params.map { case (a, i) => s"this.$i = $i;" }.mkString("\n    ")}
            |  }
            |
+           |${if (n < 27) append(n, types, names) else ""}
            |${if (n == 2) _2 else ""}
            |
            |  public static <$types, B> $curried curry(Function<Tuple$n<$types>, B> f) {
