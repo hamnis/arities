@@ -39,6 +39,14 @@ public interface SQLFunction<A, B> extends Serializable {
         };
     }
 
+    default <C> SQLFunction<A, C> flatMap(SQLFunction<B, SQLFunction<A, C>> fn) {
+        return a -> fn.apply(apply(a)).apply(a);
+    }
+
+    default <C> SQLFunction<A, C> map(SQLFunction<B, C> fn) {
+        return andThen(fn);
+    }
+
     default <V> SQLFunction<A, V> andThen(SQLFunction<? super B, ? extends V> after) {
         Objects.requireNonNull(after, "after is null");
         return (a) -> after.apply(apply(a));

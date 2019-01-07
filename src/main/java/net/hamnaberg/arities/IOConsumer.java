@@ -19,6 +19,10 @@ public interface IOConsumer<A> {
         };
     }
 
+    static <A> IOConsumer<A> empty() {
+        return ignore -> {};
+    }
+
     default Consumer<A> unchecked() {
         return (a) -> {
             try {

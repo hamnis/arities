@@ -39,6 +39,14 @@ public interface IOFunction<A, B> extends Serializable {
         };
     }
 
+    default <C> IOFunction<A, C> flatMap(IOFunction<B, IOFunction<A, C>> fn) {
+        return a -> fn.apply(apply(a)).apply(a);
+    }
+
+    default <C> IOFunction<A, C> map(IOFunction<B, C> fn) {
+        return andThen(fn);
+    }
+
     default <V> IOFunction<A, V> andThen(IOFunction<? super B, ? extends V> after) {
         Objects.requireNonNull(after, "after is null");
         return (a) -> after.apply(apply(a));

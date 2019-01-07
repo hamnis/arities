@@ -19,6 +19,10 @@ public interface SQLConsumer<A> {
         };
     }
 
+    static <A> SQLConsumer<A> empty() {
+        return ignore -> {};
+    }
+
     default Consumer<A> unchecked() {
         return (a) -> {
             try {

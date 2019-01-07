@@ -27,6 +27,10 @@ object Consumers {
            |      return t -> accept(${(1 to n).map(i => s"t._$i").mkString(", ")});
            |   }
            |
+           |   static <$types> Consumer$n<$types> empty() {
+           |     return ($names) -> {};
+           |   }
+           |
            |   default Function$n<$types, Void> asFunction() {
            |      return ($names) -> {
            |        accept($names);
@@ -81,7 +85,11 @@ object Consumers {
            |                else throw new $exceptionBaseType(e);
            |            }
            |        };
-           |    }
+           |   }
+           |
+           |   static <$types> ${prefix}Consumer$n<$types> empty() {
+           |     return ($names) -> {};
+           |   }
            |
            |   default Consumer$n<$types> unchecked() {
            |      return ($names) -> {

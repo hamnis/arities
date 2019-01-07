@@ -21,6 +21,10 @@ public interface SQLBiConsumer<A1, A2> extends Serializable {
         };
     }
 
+    static <A1, A2> SQLBiConsumer<A1, A2> empty() {
+        return (a1, a2) -> {};
+    }
+
     default BiConsumer<A1, A2> unchecked() {
         return (a1, a2) -> {
             try {
