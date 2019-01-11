@@ -29,7 +29,7 @@ public interface IOBiFunction<A1, A2, B> extends Serializable {
         };
     }
 
-    static <A1, A2, B> IOBiFunction<A1, A2, B> untupled(Function<Tuple2<A1, A2>, B> f) {
+    static <A1, A2, B> IOBiFunction<A1, A2, B> untupled(IOFunction<Tuple2<A1, A2>, B> f) {
         return (a1, a2) -> f.apply(Tuples.of(a1, a2));
     }
 

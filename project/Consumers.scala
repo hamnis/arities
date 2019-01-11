@@ -97,7 +97,7 @@ object Consumers {
            |      };
            |   }
            |
-           |   static <$types> ${prefix}Consumer$n<$types> untupled(Consumer<Tuple$n<$types>> f) {
+           |   static <$types> ${prefix}Consumer$n<$types> untupled(${prefix}Consumer<Tuple$n<$types>> f) {
            |     return ($names) -> f.accept(Tuples.of($names));
            |   }
            |

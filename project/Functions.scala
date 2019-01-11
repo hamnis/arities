@@ -83,7 +83,7 @@ object Functions {
            |       return ($names) -> value;
            |   }
            |
-           |   static <$types, B> ${prefix}Function$n<$types, B> untupled(Function<Tuple$n<$types>, B> f) {
+           |   static <$types, B> ${prefix}Function$n<$types, B> untupled(${prefix}Function<Tuple$n<$types>, B> f) {
            |       return ($names) -> f.apply(Tuples.of($names));
            |   }
            |

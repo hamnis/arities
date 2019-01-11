@@ -3,6 +3,7 @@ package net.hamnaberg.arities;
 import java.sql.SQLException;
 import java.util.function.Supplier;
 
+@FunctionalInterface
 public interface SQLSupplier<A> {
     A get() throws SQLException;
 
