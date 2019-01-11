@@ -24,22 +24,22 @@ object Consumers {
            |   void accept($paramsString);
            |
            |   default Consumer<Tuple$n<$types>> tupled() {
-           |      return t -> accept(${(1 to n).map(i => s"t._$i").mkString(", ")});
+           |       return t -> accept(${(1 to n).map(i => s"t._$i").mkString(", ")});
            |   }
            |
            |   static <$types> Consumer$n<$types> empty() {
-           |     return ($names) -> {};
+           |       return ($names) -> {};
            |   }
            |
            |   default Function$n<$types, Void> asFunction() {
-           |      return ($names) -> {
-           |        accept($names);
-           |        return null;
-           |      };
+           |       return ($names) -> {
+           |           accept($names);
+           |           return null;
+           |       };
            |   }
            |
            |   static <$types> Consumer$n<$types> untupled(Consumer<Tuple$n<$types>> c) {
-           |      return ($names) -> c.accept(Tuples.of($names));
+           |       return ($names) -> c.accept(Tuples.of($names));
            |   }
            |
            |   long serialVersionUID = ${serialVersionUID}L;
@@ -76,28 +76,24 @@ object Consumers {
            |   void accept($paramsString) throws $exceptionBaseType;
            |
            |   static <$types> ${prefix}Consumer$n<$types> fromConsumer(Consumer$n<$types> f) {
-           |        return ($names) -> {
-           |            try {
-           |                f.accept($names);
-           |            } catch (Exception e) {
-           |                //noinspection ConstantConditions
-           |                if (e instanceof $exceptionBaseType) throw (($exceptionBaseType)e);
-           |                else throw new $exceptionBaseType(e);
-           |            }
-           |        };
+           |        return ($names) -> Sneaky.runOrThrowE(
+           |                () -> f.accept($names),
+           |                $exceptionBaseType.class,
+           |                $exceptionBaseType::new
+           |        );
            |   }
            |
            |   static <$types> ${prefix}Consumer$n<$types> empty() {
-           |     return ($names) -> {};
+           |       return ($names) -> {};
            |   }
            |
            |   default Consumer$n<$types> unchecked() {
-           |      return ($names) -> {
-           |        try {
-           |          accept($names);
-           |        } catch ($exceptionBaseType e) {
-           |          throw Sneaky.sneakyThrow(e);
-           |        }
+           |       return ($names) -> {
+           |           try {
+           |               accept($names);
+           |           } catch ($exceptionBaseType e) {
+           |               throw Sneaky.sneakyThrow(e);
+           |           }
            |      };
            |   }
            |
@@ -111,8 +107,8 @@ object Consumers {
            |
            |   default ${prefix}Function$n<$types, Void> asFunction() {
            |      return ($names) -> {
-           |        accept($names);
-           |        return null;
+           |          accept($names);
+           |          return null;
            |      };
            |   }
            |

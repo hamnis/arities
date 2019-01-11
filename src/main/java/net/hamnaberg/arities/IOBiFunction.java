@@ -16,15 +16,7 @@ public interface IOBiFunction<A1, A2, B> extends Serializable {
 
 
     static <A1, A2, B> IOBiFunction<A1, A2, B> fromFunction(BiFunction<A1, A2, B> f) {
-        return (a1, a2) -> {
-            try {
-                return f.apply(a1, a2);
-            } catch (Exception e) {
-                //noinspection ConstantConditions
-                if (e instanceof IOException) throw ((IOException) e);
-                else throw new IOException(e);
-            }
-        };
+        return (a1, a2) -> Sneaky.getOrThrowE(() -> f.apply(a1, a2), IOException.class, IOException::new);
     }
 
     default BiFunction<A1, A2, B> unchecked() {

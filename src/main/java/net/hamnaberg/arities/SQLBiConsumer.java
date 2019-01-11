@@ -10,15 +10,7 @@ public interface SQLBiConsumer<A1, A2> extends Serializable {
     void accept(A1 a1, A2 a2) throws SQLException;
 
     static <A1, A2> SQLBiConsumer<A1, A2> fromConsumer(BiConsumer<A1, A2> f) {
-        return (a1, a2) -> {
-            try {
-                f.accept(a1, a2);
-            } catch (Exception e) {
-                //noinspection ConstantConditions
-                if (e instanceof SQLException) throw ((SQLException)e);
-                else throw new SQLException(e);
-            }
-        };
+        return (a1, a2) -> Sneaky.runOrThrowE(() -> f.accept(a1, a2), SQLException.class, SQLException::new);
     }
 
     static <A1, A2> SQLBiConsumer<A1, A2> empty() {

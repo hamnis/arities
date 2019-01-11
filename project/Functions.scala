@@ -25,24 +25,24 @@ object Functions {
            |   B apply($paramsString);
            |
            |   static <$types, B> Function$n<$types, B> constant(B value) {
-           |     return ($names) -> value;
+           |       return ($names) -> value;
            |   }
            |
            |   static <$types, B> Function$n<$types, B> untupled(Function<Tuple$n<$types>, B> f) {
-           |     return ($names) -> f.apply(Tuples.of($names));
+           |       return ($names) -> f.apply(Tuples.of($names));
            |   }
            |
            |   default Function<Tuple$n<$types>, B> tupled() {
-           |      return t -> apply(${(1 to n).map(i => s"t._$i").mkString(", ")});
+           |       return t -> apply(${(1 to n).map(i => s"t._$i").mkString(", ")});
            |   }
            |
            |   default $curriedTypes curried() {
-           |      return ${params.map(_._2).mkString(" -> ")} -> apply($names);
+           |       return ${params.map(_._2).mkString(" -> ")} -> apply($names);
            |   }
            |
            |   default <V> Function$n<$types, V> andThen(Function<? super B, ? extends V> after) {
-           |     Objects.requireNonNull(after, "after is null");
-           |     return ($names) -> after.apply(apply($names));
+           |       Objects.requireNonNull(after, "after is null");
+           |       return ($names) -> after.apply(apply($names));
            |   }
            |
            |   long serialVersionUID = ${serialVersionUID}L;
@@ -80,36 +80,32 @@ object Functions {
            |   B apply($paramsString) throws $exceptionBaseType;
            |
            |   static <$types, B> ${prefix}Function$n<$types, B> constant(B value) {
-           |     return ($names) -> value;
+           |       return ($names) -> value;
            |   }
            |
            |   static <$types, B> ${prefix}Function$n<$types, B> untupled(Function<Tuple$n<$types>, B> f) {
-           |     return ($names) -> f.apply(Tuples.of($names));
+           |       return ($names) -> f.apply(Tuples.of($names));
            |   }
            |
            |   default ${prefix}Function<Tuple$n<$types>, B> tupled() {
-           |      return t -> apply(${(1 to n).map(i => s"t._$i").mkString(", ")});
+           |       return t -> apply(${(1 to n).map(i => s"t._$i").mkString(", ")});
            |   }
            |
            |   static <$types, B> ${prefix}Function$n<$types, B> fromFunction(Function$n<$types, B> f) {
-           |        return ($names) -> {
-           |            try {
-           |                return f.apply($names);
-           |            } catch (Exception e) {
-           |                //noinspection ConstantConditions
-           |                if (e instanceof $exceptionBaseType) throw (($exceptionBaseType) e);
-           |                else throw new $exceptionBaseType(e);
-           |            }
-           |        };
-           |    }
+           |       return ($names) -> Sneaky.getOrThrowE(
+           |               () -> f.apply($names),
+           |               $exceptionBaseType.class,
+           |               $exceptionBaseType::new
+           |       );
+           |   }
            |
            |   default Function$n<$types, B> unchecked() {
-           |      return ($names) -> {
-           |        try {
-           |          return apply($names);
-           |        } catch ($exceptionBaseType e) {
-           |          throw Sneaky.sneakyThrow(e);
-           |        }
+           |       return ($names) -> {
+           |           try {
+           |               return apply($names);
+           |           } catch ($exceptionBaseType e) {
+           |               throw Sneaky.sneakyThrow(e);
+           |           }
            |      };
            |   }
            |
