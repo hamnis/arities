@@ -8,7 +8,11 @@ If there are any users of this library that is not me, If you need me to bump th
 send a Pull Request.
 
 This library is used by Immutable-JSON Codecs.
- 
+
+## Important changes
+Since version `0.6.0` this library uses JDK 17 as default.
+
+
 ## Where to get it?
 Current version is: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.hamnaberg/arities/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.hamnaberg/arities)
 
