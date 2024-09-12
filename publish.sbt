@@ -10,6 +10,7 @@ scmInfo := Some(
 javacOptions ++= List("--release", "17")
 tlSonatypeUseLegacyHost := true
 ThisBuild / githubWorkflowJavaVersions := List(JavaSpec.temurin("17"))
+ThisBuild / tlBaseVersion := "0.6"
 
 developers := List(
   tlGitHubDev("hamnis", "Erlend Hamnaberg")
