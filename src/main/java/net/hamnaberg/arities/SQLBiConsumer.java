@@ -32,7 +32,7 @@ public interface SQLBiConsumer<A1, A2> extends Serializable {
     }
 
     default SQLConsumer<Tuple2<A1, A2>> tupled() {
-        return t -> accept(t._1, t._2);
+        return t -> accept(t._1(), t._2());
     }
 
 

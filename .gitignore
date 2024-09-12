@@ -18,3 +18,5 @@ dependency-reduced-pom.xml
 target
 *.releaseBackup
 release.properties
+.metals
+.vscode

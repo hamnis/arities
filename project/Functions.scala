@@ -33,7 +33,7 @@ object Functions {
            |   }
            |
            |   default Function<Tuple$n<$types>, B> tupled() {
-           |       return t -> apply(${(1 to n).map(i => s"t._$i").mkString(", ")});
+           |       return t -> apply(${(1 to n).map(i => s"t._$i()").mkString(", ")});
            |   }
            |
            |   default $curriedTypes curried() {
@@ -88,7 +88,7 @@ object Functions {
            |   }
            |
            |   default ${prefix}Function<Tuple$n<$types>, B> tupled() {
-           |       return t -> apply(${(1 to n).map(i => s"t._$i").mkString(", ")});
+           |       return t -> apply(${(1 to n).map(i => s"t._$i()").mkString(", ")});
            |   }
            |
            |   static <$types, B> ${prefix}Function$n<$types, B> fromFunction(Function$n<$types, B> f) {

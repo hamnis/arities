@@ -25,11 +25,11 @@ object Tuples {
 
       def _2 =
         s"""  public Tuple2<A2, A1> swap(){
-           |    return new Tuple2<>(_2, _1);
+           |    return new Tuple2<>(_2(), _1());
            |  }
            |
            |  public java.util.Map.Entry<A1, A2> asEntry() {
-           |    return new java.util.AbstractMap.SimpleImmutableEntry<>(_1, _2);
+           |    return new java.util.AbstractMap.SimpleImmutableEntry<>(_1(), _2());
            |  }""".stripMargin
 
       val content =
@@ -41,49 +41,31 @@ object Tuples {
            |import java.util.List;
            |import java.util.Arrays;
            |
-           |public final class Tuple$n<$types> implements Serializable {
-           |  ${params.map { case (a, i) => s"public final $a $i;" }.mkString("\n  ")}
+           |public record Tuple$n<$types>(${params.map { case (a, i) => s"$a $i" }.mkString(", ")}) implements Serializable {
            |
-           |  public Tuple$n(${params.map { case (a, i) => s"$a $i" }.mkString(", ")}){
-           |    ${params.map { case (a, i) => s"this.$i = $i;" }.mkString("\n    ")}
-           |  }
            |
            |${if (n < 27) append(n, types, names) else ""}
            |${if (n == 2) _2 else ""}
            |
            |  public static <$types, B> $curried curry(Function<Tuple$n<$types>, B> f) {
-           |    return ${names.mkString(" -> ")} -> f.apply(new Tuple$n<>(${names.mkString(", ")}));
+           |    return ${names.mkString(" -> ")} -> f.apply(new Tuple$n<>(${names.map(n => n).mkString(", ")}));
            |  }
            |
            |  public static <$types, B> Function<Tuple$n<$types>, B> uncurry($curried f) {
-           |    return t -> f${names.map(a => s".apply(t.$a)").mkString("")};
+           |    return t -> f${names.map(a => s".apply(t.$a())").mkString("")};
            |  }
            |
-           |${params.zipWithIndex.map{case ((a, field), idx) => s"  public $a component${idx + 1}() {\n    return $field;\n  }\n"}.mkString("\n")}
+           |${params.zipWithIndex.map{case ((a, field), idx) => s"  public $a component${idx + 1}() {\n    return $field();\n  }\n"}.mkString("\n")}
            |
-           |${params.zipWithIndex.map{case ((a, field), idx) => s"  public <B> Tuple$n<${params.map(_._1).updated(idx, "B").mkString(", ")}> map${idx + 1}(Function<? super $a, ? extends B> f) {\n    return new Tuple$n<>(${names.updated(idx, s"f.apply($field)").mkString(", ")});\n  }\n"}.mkString("\n")}
+           |${params.zipWithIndex.map{case ((a, field), idx) => s"  public <B> Tuple$n<${params.map(_._1).updated(idx, "B").mkString(", ")}> map${idx + 1}(Function<? super $a, ? extends B> f) {\n    return new Tuple$n<>(${names.updated(idx, s"f.apply($field())").mkString(", ")});\n  }\n"}.mkString("\n")}
            |
-           |  @Override
-           |  public int hashCode() {
-           |    return Objects.hash(${names.mkString(", ")});
-           |  }
-           |
-           |  @Override
-           |  public boolean equals(Object obj) {
-           |    if (obj == this) {
-           |      return true;
-           |    } else if (obj instanceof Tuple$n) {
-           |      Tuple$n other = (Tuple$n)obj;
-           |      return ${names.map(n => s"Objects.equals($n, other.$n)").mkString(" && ")};
-           |    } else return false;
-           |  }
            |
            |  public int arity() {
            |    return $n;
            |  }
            |
            |  public List<Object> asList() {
-           |    return Arrays.asList(${names.mkString(", ")});
+           |    return Arrays.asList(${names.map(n => n + "()").mkString(", ")});
            |  }
            |
            |  @Override
