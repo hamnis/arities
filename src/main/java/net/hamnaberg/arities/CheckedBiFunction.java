@@ -31,7 +31,7 @@ public interface CheckedBiFunction<A1, A2, B> extends Serializable {
     }
 
     default CheckedFunction<Tuple2<A1, A2>, B> tupled() {
-        return t -> apply(t._1, t._2);
+        return t -> apply(t._1(), t._2());
     }
 
     default CheckedFunction<A1, CheckedFunction<A2, B>> curried() {

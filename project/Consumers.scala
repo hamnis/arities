@@ -24,7 +24,7 @@ object Consumers {
            |   void accept($paramsString);
            |
            |   default Consumer<Tuple$n<$types>> tupled() {
-           |       return t -> accept(${(1 to n).map(i => s"t._$i").mkString(", ")});
+           |       return t -> accept(${(1 to n).map(i => s"t._$i()").mkString(", ")});
            |   }
            |
            |   static <$types> Consumer$n<$types> empty() {
@@ -102,7 +102,7 @@ object Consumers {
            |   }
            |
            |   default ${prefix}Consumer<Tuple$n<$types>> tupled() {
-           |      return t -> accept(${(1 to n).map(i => s"t._$i").mkString(", ")});
+           |      return t -> accept(${(1 to n).map(i => s"t._$i()").mkString(", ")});
            |   }
            |
            |   default ${prefix}Function$n<$types, Void> asFunction() {

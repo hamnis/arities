@@ -33,7 +33,7 @@ public interface SQLBiFunction<A1, A2, B> extends Serializable {
     }
 
     default SQLFunction<Tuple2<A1, A2>, B> tupled() {
-        return t -> apply(t._1, t._2);
+        return t -> apply(t._1(), t._2());
     }
 
     default SQLFunction<A1, SQLFunction<A2, B>> curried() {

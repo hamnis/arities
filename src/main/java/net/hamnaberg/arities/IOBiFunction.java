@@ -34,7 +34,7 @@ public interface IOBiFunction<A1, A2, B> extends Serializable {
     }
 
     default IOFunction<Tuple2<A1, A2>, B> tupled() {
-        return t -> apply(t._1, t._2);
+        return t -> apply(t._1(), t._2());
     }
 
     default IOFunction<A1, IOFunction<A2, B>> curried() {

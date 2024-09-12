@@ -35,18 +35,12 @@ object Tuples {
       val content =
         s"""package $pkg;
            |
-           |import java.io.Serializable;
            |import java.util.Objects;
            |import java.util.function.Function;
            |import java.util.List;
            |import java.util.Arrays;
            |
-           |public final class Tuple$n<$types> implements Serializable {
-           |  ${params.map { case (a, i) => s"public final $a $i;" }.mkString("\n  ")}
-           |
-           |  public Tuple$n(${params.map { case (a, i) => s"$a $i" }.mkString(", ")}){
-           |    ${params.map { case (a, i) => s"this.$i = $i;" }.mkString("\n    ")}
-           |  }
+           |public record Tuple$n<$types>(${params.map { case (a, i) => s"$a $i" }.mkString(", ")}) {
            |
            |${if (n < 27) append(n, types, names) else ""}
            |${if (n == 2) _2 else ""}
@@ -63,20 +57,6 @@ object Tuples {
            |
            |${params.zipWithIndex.map{case ((a, field), idx) => s"  public <B> Tuple$n<${params.map(_._1).updated(idx, "B").mkString(", ")}> map${idx + 1}(Function<? super $a, ? extends B> f) {\n    return new Tuple$n<>(${names.updated(idx, s"f.apply($field)").mkString(", ")});\n  }\n"}.mkString("\n")}
            |
-           |  @Override
-           |  public int hashCode() {
-           |    return Objects.hash(${names.mkString(", ")});
-           |  }
-           |
-           |  @Override
-           |  public boolean equals(Object obj) {
-           |    if (obj == this) {
-           |      return true;
-           |    } else if (obj instanceof Tuple$n) {
-           |      Tuple$n other = (Tuple$n)obj;
-           |      return ${names.map(n => s"Objects.equals($n, other.$n)").mkString(" && ")};
-           |    } else return false;
-           |  }
            |
            |  public int arity() {
            |    return $n;
@@ -91,7 +71,6 @@ object Tuples {
            |    return asList().stream().map(Object::toString).collect(java.util.stream.Collectors.joining(", ", "(", ")"));
            |  }
            |
-           |  private static final long serialVersionUID = ${serialVersionUID}L;
            |}
       """.stripMargin
       IO.write(file, content)
