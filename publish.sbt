@@ -8,7 +8,8 @@ scmInfo := Some(
     Some("scm:git:git@github.com:hamnis/arities.git")
   ))
 javacOptions ++= List("--release", "17")
-tlSonatypeUseLegacyHost := true
+
+sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeLegacy
 ThisBuild / githubWorkflowJavaVersions := List(JavaSpec.temurin("17"))
 ThisBuild / tlBaseVersion := "0.6"
 
